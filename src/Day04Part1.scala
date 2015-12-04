@@ -37,11 +37,7 @@ object Day04Part1 {
         }
       })
 
-      val iterationResults = Await.result(Future.sequence(iterationFutures), Duration.Inf).flatMap({
-        case None => List()
-        case Some(i) => List(i)
-      })
-
+      val iterationResults = Await.result(Future.sequence(iterationFutures), Duration.Inf).flatten
       val runTime = (System.nanoTime() - startTime).toDouble / Math.pow(10, 9)
       val hashesCalculated = (iteration + 1) * numThreads * batchSize
       val hashesPerSecond = hashesCalculated / runTime
