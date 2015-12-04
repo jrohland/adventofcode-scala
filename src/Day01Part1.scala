@@ -4,12 +4,11 @@
 object Day01Part1 {
 
   def main(args: Array[String]): Unit = {
-    var floor = 0
     val input = scala.io.Source.fromFile("input/day01-input.txt").getLines().next()
-    input.foreach({
-      case '(' => floor += 1
-      case ')' => floor -= 1
-    })
+    val floor = input.map({
+      case '(' => 1
+      case ')' => -1
+    }).sum
     println(s"Stopped on floor $floor")
   }
 
