@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 object Day04Part1 {
 
-  // How many hashes each thread should do on an interation
+  // How many hashes each thread should do on an iteration
   val batchSize = 1000
 
   // Number of concurrent threads hashing
