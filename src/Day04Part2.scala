@@ -9,15 +9,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 object Day04Part2 {
 
+  // How many hashes each thread should do on an interation
+  val batchSize = 1000
+
+  // Number of concurrent threads hashing
+  val numThreads = 5
+
   def md5Str(str: String): String = {
     MessageDigest.getInstance("MD5").digest(str.getBytes).map("%02X".format(_)).mkString
   }
 
   def main(args: Array[String]): Unit = {
-
-    val batchSize = 1000
-    val numThreads = 5
-
     val input = scala.io.Source.fromFile("input/day04-input.txt").getLines().next()
     val startTime = System.nanoTime()
 
