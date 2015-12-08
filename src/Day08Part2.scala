@@ -8,8 +8,7 @@ object Day08Part2 {
 
     val totalNewChars = input.map(str => {
       str.map({
-        case '\\' => 2
-        case '"' => 2
+        case '\\' | '"' => 2
         case _ => 1
       }).sum + 2 - str.length
     }).sum
