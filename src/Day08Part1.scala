@@ -7,22 +7,20 @@ object Day08Part1 {
     val input = scala.io.Source.fromFile("input/day08-input.txt").getLines()
 
     val totalEscapedCount = input.map(str => {
-      val escapedCharCount = (1 to str.length - 2).
-        partition(str.charAt(_) == '\\')._1.
-        foldLeft((List[Int](), Int.MinValue, false))((x, y) => {
-          if (x._2 == y - 1 && x._3) {
-            (x._1, y, false)
-          } else {
-            (x._1 :+ y, y, true)
+      val unescapedLength = str.substring(1, str.length - 1).foldLeft((false, 0))((x, y) => {
+        if (x._1) {
+          y match {
+            case 'x' => (false, x._2 - 1)
+            case _ => (false, x._2 + 1)
           }
-        })._1.map(index => {
-          str.charAt(index + 1) match {
-            case 'x' => 3
-            case _ => 1
+        } else {
+          y match {
+            case '\\' => (true, x._2)
+            case _ => (false, x._2 + 1)
           }
-        }).sum + 2
-
-      escapedCharCount
+        }
+      })._2
+      str.length - unescapedLength
     }).sum
 
     println(s"Total escaped: $totalEscapedCount")
