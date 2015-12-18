@@ -34,10 +34,7 @@ object Day18Part1 {
     })
 
     val numLit = currentLights.map(row => {
-      row.map({
-        case true => 1
-        case _ => 0
-      }).sum
+      row.count(identity)
     }).sum
 
     println(numLit)
