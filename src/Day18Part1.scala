@@ -6,10 +6,7 @@ object Day18Part1 {
   def main(args: Array[String]): Unit = {
     val input = scala.io.Source.fromFile("input/day18-input.txt").getLines()
     val initialLights = input.map(row => {
-      row.map {
-        case '#' => true
-        case _ => false
-      }.toList
+      row.map(_ == '#').toList
     }).toList
 
     val currentLights = (0 until 100).foldLeft(initialLights)((lights, i) => {

@@ -12,10 +12,7 @@ object Day18Part2 {
           (rowIndex == input.size - 1 && (colIndex == 0 || colIndex == row.length - 1))) {
           true
         } else {
-          row.charAt(colIndex) match {
-            case '#' => true
-            case _ => false
-          }
+          row.charAt(colIndex) == '#'
         }
       }).toList
     }).toList
