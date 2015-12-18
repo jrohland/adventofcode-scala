@@ -45,16 +45,9 @@ object Day18Part1 {
   }
 
   def litNeighbors(lights: List[List[Boolean]], row: Int, col: Int): Int = {
-    (Math.max(row - 1, 0) to Math.min(row + 1, lights.size - 1)).map(rowIndex => {
-      val currentRow = lights(rowIndex)
-      (Math.max(col - 1, 0) to Math.min(col + 1, currentRow.size - 1)).map(colIndex => {
-        if ((rowIndex == row && colIndex == col) || !currentRow(colIndex)) {
-          0
-        } else {
-          1
-        }
-      }).sum
-    }).sum
+    (for (rowIndex <- Math.max(row - 1, 0) to Math.min(row + 1, lights.size - 1);
+       colIndex <- Math.max(col - 1, 0) to Math.min(col + 1, lights.head.size - 1)
+       if !(rowIndex == row && colIndex == col)) yield lights(rowIndex)(colIndex)).count(identity)
   }
 
   def printLights(lights: List[List[Boolean]]) = {
