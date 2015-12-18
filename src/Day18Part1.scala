@@ -16,18 +16,9 @@ object Day18Part1 {
         val row = lights(rowIndex)
         row.indices.map(colIndex => {
           val neighbors = litNeighbors(lights, rowIndex, colIndex)
-          if (row(colIndex)) {
-            if (neighbors == 2 || neighbors == 3) {
-              true
-            } else {
-              false
-            }
-          } else {
-            if (neighbors == 3) {
-              true
-            } else {
-              false
-            }
+          (row(colIndex), neighbors) match {
+            case (true, 2) | (true, 3) | (false, 3) => true
+            case _ => false
           }
         }).toList
       }).toList

@@ -5,11 +5,17 @@ object Day18Part2 {
 
   def main(args: Array[String]): Unit = {
     val input = scala.io.Source.fromFile("input/day18-input.txt").getLines().toList
+    val stuckPositions = Set(
+      (0, 0),
+      (0, input.size - 1),
+      (input.head.length - 1, 0),
+      (input.head.length - 1, input.size - 1)
+    )
+
     val initialLights = input.indices.map(rowIndex => {
       val row = input(rowIndex)
       (0 until row.length).map(colIndex => {
-        if ((rowIndex == 0 && (colIndex == 0 || colIndex == row.length - 1)) ||
-          (rowIndex == input.size - 1 && (colIndex == 0 || colIndex == row.length - 1))) {
+        if (stuckPositions.contains((rowIndex, colIndex))) {
           true
         } else {
           row.charAt(colIndex) == '#'
@@ -23,21 +29,13 @@ object Day18Part2 {
       lights.indices.map(rowIndex => {
         val row = lights(rowIndex)
         row.indices.map(colIndex => {
-          val neighbors = litNeighbors(lights, rowIndex, colIndex)
-          if ((rowIndex == 0 && (colIndex == 0 || colIndex == row.length - 1)) ||
-            (rowIndex == lights.size - 1 && (colIndex == 0 || colIndex == row.length - 1))) {
+          if (stuckPositions.contains((rowIndex, colIndex))) {
             true
-          } else if (row(colIndex)) {
-            if (neighbors == 2 || neighbors == 3) {
-              true
-            } else {
-              false
-            }
           } else {
-            if (neighbors == 3) {
-              true
-            } else {
-              false
+            val neighbors = litNeighbors(lights, rowIndex, colIndex)
+            (row(colIndex), neighbors) match {
+              case (true, 2) | (true, 3) | (false, 3) => true
+              case _ => false
             }
           }
         }).toList
