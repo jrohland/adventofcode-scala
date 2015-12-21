@@ -12,6 +12,7 @@ object Day21Part1 {
       new StoreItem("Greataxe", 74, 8, 0)
     ),
     "armor" -> List(
+      new StoreItem("No Armor", 0, 0, 0),
       new StoreItem("Leather", 13, 0, 1),
       new StoreItem("Chainmail", 31, 0, 2),
       new StoreItem("Splintmail", 53, 0, 3),
@@ -19,6 +20,8 @@ object Day21Part1 {
       new StoreItem("Platemail", 102, 0, 5)
     ),
     "rings" -> List(
+      new StoreItem("No Left Ring", 0, 0, 0),
+      new StoreItem("No Right Ring", 0, 0, 0),
       new StoreItem("Damage +1", 25, 1, 0),
       new StoreItem("Damage +2", 50, 2, 0),
       new StoreItem("Damage +3", 100, 3, 0),
@@ -35,23 +38,20 @@ object Day21Part1 {
       line.split(": ").last.toInt
     }).toArray
 
-    val weaponArmorCombos = for (weapon <- store("weapons"); armor <- store("armor")) yield weapon + armor
-    val ringCombos = store("rings").combinations(2).map(combo => {
-      combo.head + combo.last
-    })
-    val allCombos = weaponArmorCombos ++
-      (for (combo <- weaponArmorCombos; ring <- store("rings")) yield combo + ring) ++
-      (for (combo <- weaponArmorCombos; ring <- ringCombos) yield combo + ring)
+    val combos = for (
+      weapon <- store("weapons");
+      armor <- store("armor");
+      rings <- store("rings").combinations(2))
+      yield weapon + armor + rings.reduce((ring1, ring2) => ring1 + ring2)
 
-
-    val winningCombos = allCombos.filter(combo => {
-      fightRound(bossHP, 100, bossDamage, bossArmor, combo)
+    val winningCombos = combos.filter(combo => {
+      fight(bossHP, 100, bossDamage, bossArmor, combo)
     }).sortBy(_.cost)
 
-    winningCombos.foreach(println)
+    println(winningCombos.head.cost)
   }
 
-  def fightRound(bossHP: Int, yourHP: Int, bossDamage: Int, bossArmor: Int, items: StoreItem): Boolean = {
+  def fight(bossHP: Int, yourHP: Int, bossDamage: Int, bossArmor: Int, items: StoreItem): Boolean = {
     val dmgToBoss = Math.max(items.damage - bossArmor, 0)
     val dmgToYou = Math.max(bossDamage - items.armor, 0)
 
@@ -60,7 +60,7 @@ object Day21Part1 {
     } else if (yourHP - dmgToYou <= 0) {
       false
     } else {
-      fightRound(bossHP - dmgToBoss, yourHP - dmgToYou, bossDamage, bossArmor, items)
+      fight(bossHP - dmgToBoss, yourHP - dmgToYou, bossDamage, bossArmor, items)
     }
   }
 
