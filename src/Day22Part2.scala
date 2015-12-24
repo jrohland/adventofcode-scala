@@ -1,7 +1,7 @@
 /**
   * Created by jesse on 12/24/15.
   */
-object Day22Part1 {
+object Day22Part2 {
 
   val input = scala.io.Source.fromFile("input/day22-input.txt").getLines()
 
@@ -70,21 +70,26 @@ object Day22Part1 {
   }
 
   def simulatePlayerRound(fightStatus: FightStatus, spell: (String, Int)): FightStatus = {
-    val damageToBoss = (spell._1 match {
-      case "Magic Missile" => 4
-      case "Drain" => 2
-      case _ => 0
-    }) + (if (fightStatus.poisonRounds > 0) 3 else 0)
+    if (fightStatus.playerHP - 1 == 0) {
+      FightStatus(fightStatus.bossHP, 0, fightStatus.currentMana, fightStatus.totalMana,
+        fightStatus.actions, 0, 0, 0)
+    } else {
+      val damageToBoss = (spell._1 match {
+        case "Magic Missile" => 4
+        case "Drain" => 2
+        case _ => 0
+      }) + (if (fightStatus.poisonRounds > 0) 3 else 0)
 
-    FightStatus(
-      Math.max(fightStatus.bossHP - damageToBoss, 0),
-      fightStatus.playerHP + (if (spell._1 == "Drain") 2 else 0),
-      fightStatus.currentMana + (if (fightStatus.rechargeRounds > 0) 101 else 0) - spell._2,
-      fightStatus.totalMana + spell._2,
-      fightStatus.actions :+ spell._1,
-      if (spell._1 == "Poison") 6 else Math.max(fightStatus.poisonRounds - 1, 0),
-      if (spell._1 == "Shield") 6 else Math.max(fightStatus.shieldRounds - 1, 0),
-      if (spell._1 == "Recharge") 5 else Math.max(fightStatus.rechargeRounds - 1, 0))
+      FightStatus(
+        Math.max(fightStatus.bossHP - damageToBoss, 0),
+        fightStatus.playerHP + (if (spell._1 == "Drain") 2 else 0) - 1,
+        fightStatus.currentMana + (if (fightStatus.rechargeRounds > 0) 101 else 0) - spell._2,
+        fightStatus.totalMana + spell._2,
+        fightStatus.actions :+ spell._1,
+        if (spell._1 == "Poison") 6 else Math.max(fightStatus.poisonRounds - 1, 0),
+        if (spell._1 == "Shield") 6 else Math.max(fightStatus.shieldRounds - 1, 0),
+        if (spell._1 == "Recharge") 5 else Math.max(fightStatus.rechargeRounds - 1, 0))
+    }
   }
 
   def simulateBossRound(fightStatus: FightStatus): FightStatus = {
