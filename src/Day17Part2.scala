@@ -5,11 +5,10 @@ object Day17Part2 {
 
   def main(args: Array[String]): Unit = {
     val input = scala.io.Source.fromFile("input/day17-input.txt").getLines().map(_.toInt).toList
-    val containers = input.zipWithIndex
-    val combos = (1 to containers.size).map(i => {
-      i -> containers.combinations(i).filter(_.map(_._1).sum == 150)
-    }).toMap.filter(_._2.nonEmpty)
-    println(combos(combos.keys.toList.sortBy(identity).head).size)
+    val containers = input.zipWithIndex.toSet
+    val combos = containers.subsets.filter(_.toList.map(_._1).sum == 150)
+    val combosWithSize = combos.map(combo => combo.size -> combo).toList.groupBy(_._1)
+    println(combosWithSize(combosWithSize.keys.toList.sortBy(identity).head).size)
   }
 
 }
