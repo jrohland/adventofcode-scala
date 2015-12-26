@@ -12,9 +12,7 @@ object Day25Part1 {
     println(s"Need to find code $codeIndex")
 
     val code = (2 to codeIndex).foldLeft(20151125l)((previousNumber, i) => {
-      val code = (previousNumber * 252533) % 33554393
-      println(s"Code $i : $code")
-      code
+      (previousNumber * 252533) % 33554393
     })
 
     println(code)
