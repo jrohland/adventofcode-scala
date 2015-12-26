@@ -1,11 +1,9 @@
-import scala.collection.mutable.Map
-
 /**
   * Created by jesse on 12/24/15.
   */
 object Day23Part2 {
 
-  val registers = Map(
+  val initialRegisters = Map(
     "a" -> 1l,
     "b" -> 0l
   )
@@ -16,40 +14,44 @@ object Day23Part2 {
       line.substring(0, 3) -> line.substring(4)
     }).toList
 
-    var i = 0
-    while (i < instructions.length) {
-      i = i + runInstruction(instructions(i))
-    }
-
-    println(registers("b"))
+    val result = runInstructions(instructions, initialRegisters)
+    println(result)
   }
 
-  def runInstruction(instruction: (String, String)): Int = {
-    instruction._1 match {
-      case "hlf" =>
-        registers(instruction._2) = registers(instruction._2) / 2
-        1
-      case "tpl" =>
-        registers(instruction._2) = registers(instruction._2) * 3
-        1
-      case "inc" =>
-        registers(instruction._2) = registers(instruction._2) + 1
-        1
-      case "jmp" =>
-        instruction._2.toInt
-      case "jie" =>
-        val Array(register, jump) = instruction._2.split(", ")
-        if (registers(register) % 2 == 0)
-          jump.toInt
-        else
-          1
-      case "jio" =>
-        val Array(register, jump) = instruction._2.split(", ")
-        if (registers(register) == 1)
-          jump.toInt
-        else
-          1
-    }
+  def runInstructions(instructions: List[(String, String)], initialRegisters: Map[String, Long]): Long = {
+    Stream.from(0).foldLeft((initialRegisters, 0))((values, instructionsExecuted) => {
+      val registers = values._1
+      val instructionIndex = values._2
+
+      if (instructionIndex >= instructions.length) {
+        return registers("b")
+      } else {
+        val instruction = instructions(instructionIndex)
+        instruction._1 match {
+          case "hlf" =>
+            (registers+ (instruction._2 -> (registers(instruction._2) / 2)), instructionIndex + 1)
+          case "tpl" =>
+            (registers + (instruction._2 -> (registers(instruction._2) * 3)), instructionIndex + 1)
+          case "inc" =>
+            (registers + (instruction._2 -> (registers(instruction._2) + 1)), instructionIndex + 1)
+          case "jmp" =>
+            (registers, instructionIndex + instruction._2.toInt)
+          case "jie" =>
+            val Array(register, jump) = instruction._2.split(", ")
+            if (registers(register) % 2 == 0)
+              (registers, instructionIndex + jump.toInt)
+            else
+              (registers, instructionIndex + 1)
+          case "jio" =>
+            val Array(register, jump) = instruction._2.split(", ")
+            if (registers(register) == 1)
+              (registers, instructionIndex + jump.toInt)
+            else
+              (registers, instructionIndex + 1)
+        }
+      }
+    })
+    -1
   }
 
 }
