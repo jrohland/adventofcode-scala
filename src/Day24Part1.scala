@@ -10,17 +10,11 @@ object Day24Part1 {
 
     println(s"Groups should weigh $groupWeight")
 
-    val combosFound = Stream.from(2).dropWhile(i => {
-      !packageWeights.combinations(i).exists(_.sum == groupWeight)
-    }).head
-
-    println(s"Combos found at $combosFound")
-
-    val products = packageWeights.combinations(combosFound).filter(_.sum == groupWeight).map(combo => {
+    val minQuantumEntanglement = Stream.from(2).map(i => {
+      packageWeights.combinations(i).filter(_.sum == groupWeight)
+    }).dropWhile(_.isEmpty).head.map(combo => {
       combo.map(_.toLong).product
-    })
-
-    val minQuantumEntanglement = products.toList.sorted.head
+    }).toList.sorted.head
 
     println(minQuantumEntanglement)
 
